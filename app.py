@@ -4,8 +4,8 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from PIL import Image
 import numpy as np
 import time
-import requests
 import os
+from huggingface_hub import hf_hub_download  # Import the correct downloader
 
 # Page configuration
 st.set_page_config(
@@ -18,26 +18,23 @@ st.set_page_config(
 # --- Model Downloading and Loading ---
 
 @st.cache_resource
-def download_model(url, output_path):
-    """Downloads the model from the given URL if it doesn't exist."""
-    # Create the directory if it doesn't exist
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    
-    if not os.path.exists(output_path):
-        with st.spinner("Downloading model... (this may take a few minutes on the first run)"):
-            try:
-                r = requests.get(url, stream=True)
-                r.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
-                with open(output_path, 'wb') as f:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        f.write(chunk)
-                st.success("Model downloaded successfully!")
-            except requests.exceptions.RequestException as e:
-                st.error(f"Error downloading model: {e}")
-                st.stop()
+def download_model_from_hf(repo_id, filename, cache_dir=None):
+    """Downloads a model file from a Hugging Face Hub repository."""
+    with st.spinner("Downloading model... (this may take a few minutes on the first run)"):
+        try:
+            model_path = hf_hub_download(
+                repo_id=repo_id,
+                filename=filename,
+                cache_dir=cache_dir
+            )
+            st.success("Model downloaded successfully!")
+            return model_path
+        except Exception as e:
+            st.error(f"Error downloading model from Hugging Face: {e}")
+            st.stop()
 
 @st.cache_resource
-def load_xception_model(model_path):
+def load_keras_model(model_path):
     """Loads the Keras model from the specified path."""
     try:
         return load_model(model_path)
@@ -47,16 +44,15 @@ def load_xception_model(model_path):
 
 # --- Constants and Model Setup ---
 
-# URL from your Hugging Face repository
-MODEL_URL = 'https://huggingface.co/aafimalek2032/xception'
-# Local path to save the model
-MODEL_PATH = 'models/best_model_xception.h5'
+# Hugging Face repository details
+REPO_ID = "Aafikhan/Deepfake_detection"
+MODEL_FILENAME = "best_model_xception.h5"
 
-# Download the model file
-download_model(MODEL_URL, MODEL_PATH)
+# Download and get the local path of the model
+local_model_path = download_model_from_hf(REPO_ID, MODEL_FILENAME)
 
 # Load the model
-model = load_xception_model(MODEL_PATH)
+model = load_keras_model(local_model_path)
 
 IMG_SIZE = (299, 299)
 CLASSES = ['Deepfake', 'Real']
@@ -161,3 +157,4 @@ st.markdown("---")
 st.caption("Deepfake Detector AI © 2025 | Version 2.1.0 | For educational and informational purposes only.")
 st.caption("Developed by Aafikhan Malek with ❤️")
 st.caption("For any inquiries, please contact: aafimalek2023@gmail.com")
+
