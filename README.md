@@ -1,6 +1,8 @@
 # Deepfake Image Detection 🎭🧠
 
 This project is a deep learning-based web application for detecting deepfake images using a fine-tuned **Xception** model. The app allows users to upload an image and predicts whether it is **Real** or **Fake**.
+Try with examples given in the repo 
+Live Link:- https://image-verifier.streamlit.app/
 
 ## 🔍 Overview
 
