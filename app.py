@@ -45,7 +45,7 @@ def load_keras_model(model_path):
 # --- Constants and Model Setup ---
 
 # Hugging Face repository details
-REPO_ID = "Aafikhan/Deepfake_detection"
+REPO_ID = "aafimalek2032/xception"
 MODEL_FILENAME = "best_model_xception.h5"
 
 # Download and get the local path of the model
