@@ -48,7 +48,7 @@ def load_xception_model(model_path):
 # --- Constants and Model Setup ---
 
 # URL from your Hugging Face repository
-MODEL_URL = 'https://huggingface.co/Aafikhan/Deepfake_detection/resolve/main/best_model_xception.h5'
+MODEL_URL = 'https://huggingface.co/aafimalek2032/xception'
 # Local path to save the model
 MODEL_PATH = 'models/best_model_xception.h5'
 
